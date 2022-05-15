@@ -1,7 +1,6 @@
 import hmac
 import json
 import uuid
-from datetime import datetime
 from urllib.request import urlopen, Request
 
 from pymysql import Date
@@ -10,8 +9,8 @@ from sqlalchemy import func, extract
 from QLCB.models import BookDetails, Tickets, Flights, TicketTypes, Airports, PaymentMethods, Employees, Customers, \
     Stopovers, StopoverDetails, Rules
 from QLCB import db, app
-from flask_login import current_user
 from hashlib import sha256
+
 
 # Các năm
 def report_allYear():
@@ -22,12 +21,13 @@ def report_allYear():
 
     return report
 
+
 # tháng trong năm
 def report_monthOfYear(year):
     report = db.session.query(extract('month', BookDetails.bookTime), func.sum(Tickets.price)) \
         .join(BookDetails,
               Tickets.idBookDetail == BookDetails.id) \
-        .filter(extract('year', BookDetails.bookTime) == year)\
+        .filter(extract('year', BookDetails.bookTime) == year) \
         .group_by(extract('month', BookDetails.bookTime)).all()
 
     month = []
@@ -38,11 +38,12 @@ def report_monthOfYear(year):
 
     return month
 
+
 def report_quarterOfYear(year):
     report = db.session.query(extract('quarter', BookDetails.bookTime), func.sum(Tickets.price)) \
         .join(BookDetails,
               Tickets.idBookDetail == BookDetails.id) \
-        .filter(extract('year', BookDetails.bookTime) == year)\
+        .filter(extract('year', BookDetails.bookTime) == year) \
         .group_by(extract('quarter', BookDetails.bookTime)).all()
 
     quarter = [(1, 0), (2, 0), (3, 0), (4, 0)]
@@ -51,46 +52,50 @@ def report_quarterOfYear(year):
 
     return quarter
 
+
 def report_tickets_year():
     report = db.session.query(extract('year', BookDetails.bookTime), TicketTypes.typeName, func.count(Tickets.id)) \
         .join(BookDetails,
               Tickets.idBookDetail == BookDetails.id) \
         .join(TicketTypes,
-              Tickets.idType == TicketTypes.id)\
+              Tickets.idType == TicketTypes.id) \
         .group_by(extract('year', BookDetails.bookTime),
                   Tickets.idType,
-                  TicketTypes.typeName)\
+                  TicketTypes.typeName) \
         .order_by(extract('year', BookDetails.bookTime), Tickets.idType).all()
 
     return report
+
 
 def report_tickets_months(year):
     report = db.session.query(extract('month', BookDetails.bookTime), TicketTypes.typeName, func.count(Tickets.id)) \
         .join(BookDetails,
               Tickets.idBookDetail == BookDetails.id) \
         .join(TicketTypes,
-              Tickets.idType == TicketTypes.id)\
-        .filter(extract('year', BookDetails.bookTime) == year)\
+              Tickets.idType == TicketTypes.id) \
+        .filter(extract('year', BookDetails.bookTime) == year) \
         .group_by(extract('month', BookDetails.bookTime),
                   Tickets.idType,
-                  TicketTypes.typeName)\
+                  TicketTypes.typeName) \
         .order_by(extract('month', BookDetails.bookTime), Tickets.idType).all()
 
     return report
+
 
 def report_tickets_quarter(year):
     report = db.session.query(extract('quarter', BookDetails.bookTime), TicketTypes.typeName, func.count(Tickets.id)) \
         .join(BookDetails,
               Tickets.idBookDetail == BookDetails.id) \
         .join(TicketTypes,
-              Tickets.idType == TicketTypes.id)\
-        .filter(extract('year', BookDetails.bookTime) == year)\
+              Tickets.idType == TicketTypes.id) \
+        .filter(extract('year', BookDetails.bookTime) == year) \
         .group_by(extract('quarter', BookDetails.bookTime),
                   Tickets.idType,
-                  TicketTypes.typeName)\
+                  TicketTypes.typeName) \
         .order_by(extract('quarter', BookDetails.bookTime), Tickets.idType).all()
 
     return report
+
 
 def getYear():
     query = db.session.query(BookDetails.bookTime)
@@ -98,8 +103,10 @@ def getYear():
     year = set([i.year for i in date])
     return year
 
+
 def get_ticket_types():
     return TicketTypes.query.all()
+
 
 def get_flights(start=None, destination=None, page=None, id=None, flew=False, takeOffTime=None):
     flights = Flights.query
@@ -124,11 +131,12 @@ def get_flights(start=None, destination=None, page=None, id=None, flew=False, ta
     flights = flights.order_by(Flights.takeOffTime)
 
     if page:
-        size = app.config["PAGE_SIZE"]
-        start = (int(page)-1)*size
+        size = get_rules(name="PAGE_SIZE").value
+        start = (int(page) - 1) * size
         end = start + size
         return flights.all()[start:end], len(flights.all())
     return flights.all()
+
 
 def get_airports_name():
     return Airports.query.with_entities(Airports.airportName, Airports.id).all()
@@ -165,6 +173,7 @@ def add_booking(noBusinessClass, noEconomyClass, customer, employee, flight, pay
             print(ex.args)
             return False
 
+
 def add_tickets(bookDetail):
     try:
         for i in range(0, bookDetail.noBusinessClass):
@@ -183,9 +192,9 @@ def add_tickets(bookDetail):
 def payByMomo(totalPrice, domain):
     # domain = 'http://14.160.134.135:65001/'
     endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
-    partnerCode = "MOMO544Q20211126"
-    accessKey = "FoblaCbnWl9gdHeg"
-    serectkey = "8QCHW2eoJJWhZU6TJp0L2dKlngawMaP8"
+    partnerCode = "MOMOSA3T20211011"
+    accessKey = "gxiD5mL48opmzgN7"
+    serectkey = "kZ4JW2AUswJl7NK21YTt4J3W7SmQ3bFJ"
     orderInfo = "Thanh toán vé máy bay "
     returnUrl = domain + 'momo/return'
     notifyurl = domain + 'api/momo/notify'
@@ -236,6 +245,7 @@ def add_customer(name, phone, password, dob=None, gender=None, idNo=None, addres
         print(ex.args)
         return False
 
+
 def get_customers(id=None, phone=None):
     customers = Customers.query
     if id:
@@ -243,6 +253,7 @@ def get_customers(id=None, phone=None):
     if phone:
         return customers.filter(Customers.phone == phone).first()
     return customers.all()
+
 
 def edit_customer(id, name, dob, gender, idNo, phone, address, avatar, error):
     customer = get_customers(id)
@@ -261,13 +272,15 @@ def edit_customer(id, name, dob, gender, idNo, phone, address, avatar, error):
         return False
     return True
 
-def get_employees(id=None, phone = None):
+
+def get_employees(id=None, phone=None):
     employees = Employees.query
     if id:
         return employees.get(int(id))
     if phone:
         return employees.filter(Employees.phone == phone).first()
     return employees.all()
+
 
 def edit_employee(employee, username, employeeName, dob, gender, idNo, email, phone, address, avatar, error):
     employee.username = username
@@ -287,13 +300,15 @@ def edit_employee(employee, username, employeeName, dob, gender, idNo, email, ph
         return False
     return True
 
+
 def get_pay_methods(name=None):
     pm = PaymentMethods.query
     if name:
         return pm.filter(PaymentMethods.PMethodName == name).first()
     return pm.all()
 
-def get_book_detail(id = None, orderKey = None, cid= None):
+
+def get_book_detail(id=None, orderKey=None, cid=None):
     book_details = BookDetails.query
     if id:
         return BookDetails.query.get(id)
@@ -303,11 +318,13 @@ def get_book_detail(id = None, orderKey = None, cid= None):
         book_details = book_details.filter(BookDetails.idCustomer == cid)
     return book_details.all()
 
-def get_stopover_detail(fid = None):
+
+def get_stopover_detail(fid=None):
     sd = StopoverDetails.query
     if fid:
         sd = sd.filter(StopoverDetails.idFlight == fid)
     return sd.all()
+
 
 def get_tickets(cid=None):
     tickets = Tickets.query
@@ -315,14 +332,16 @@ def get_tickets(cid=None):
         tickets = tickets.filter(Tickets.id)
     return tickets.all()
 
+
 def get_slot_remain(fid):
     b, e = db.session.query(func.sum(BookDetails.noBusinessClass),
-                         func.sum(BookDetails.noEconomyClass))\
+                            func.sum(BookDetails.noEconomyClass)) \
         .filter(BookDetails.idFlight == fid, BookDetails.status == 1).first()
     return {
         "economy": e if e else 0,
         "business": b if b else 0
     }
+
 
 def paid_book_detail(book_detail):
     try:
@@ -334,6 +353,7 @@ def paid_book_detail(book_detail):
         print(ex.args)
         return False
 
+
 def add_ticket_type(name):
     ticket_type = TicketTypes(typeName=name)
     db.session.add(ticket_type)
@@ -341,6 +361,7 @@ def add_ticket_type(name):
         db.session.commit()
     except Exception as ex:
         print(ex.args)
+
 
 def customer_change_password(customer, newpwd):
     newpwd = sha256((newpwd + customer.phone).encode('utf-8')).hexdigest()
@@ -353,6 +374,7 @@ def customer_change_password(customer, newpwd):
         print(ex.args)
         return False
 
+
 def employee_change_password(employee, newpwd):
     newpwd = sha256((newpwd + employee.username).encode('utf-8')).hexdigest()
     employee.password = newpwd
@@ -363,6 +385,7 @@ def employee_change_password(employee, newpwd):
     except Exception as ex:
         print(ex.args)
         return False
+
 
 def get_rules(id=None, name=None):
     rules = Rules.query

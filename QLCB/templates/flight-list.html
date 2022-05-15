@@ -7,16 +7,28 @@
 {% block content %}
 <link href="../static/css/FlightList.css" rel="stylesheet"/>
 <script src="{{url_for('static', filename='js/main.js')}}"></script>
+<script>
+    let destination = {{ destination }};
+    let start = {{ start }};
+    let page = {{ page_cur }};
+    {% if takeOffTime %}
+        let takeOffTime = {{ takeOffTime }};
+    {% endif %}
+</script>
 <div class="forms">
     <h2>FLIGHT LIST</h2>
-    <form action="" method="post">
+    <form action="" method="get" id="form-flight-list" >
         <div class="row topic-label">
             <div class="col-md-3 col-xs-15">
                 <label>Departure Airport</label>
                 <select id="sl1" name="start" class="col-md-12 col-xs-12 form-control">
                     <option value="0">All</option>
                     {% for a in airport_name%}
-                    <option value="{{a.id}}">{{a.airportName}}</option>
+                        {% if start == a.id %}
+                            <option value="{{a.id}}" selected>{{a.airportName}}</option>
+                        {% else %}
+                            <option value="{{a.id}}">{{a.airportName}}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -25,16 +37,24 @@
                 <select id="sl2" name="destination" class="col-md-12 col-xs-12 form-control">
                     <option value="0">All</option>
                     {% for a in airport_name%}
-                    <option value="{{a.id}}">{{a.airportName}}</option>
+                        {% if destination == a.id %}
+                            <option value="{{a.id}}" selected>{{a.airportName}}</option>
+                        {% else %}
+                            <option value="{{a.id}}">{{a.airportName}}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
             <div class="col-md-3 col-xs-12 ">
                 <label>Take off time</label>
-                <input name="takeOffTime" type="date" class="form-control">
+                <input id="input-tot" name="takeOffTime" type="date" class="form-control"
+                       {% if takeOffTime %}
+                        value="{{ takeOffTime }}"
+                       {% endif %}
+                >
             </div>
             <div class="col-md-3 col-xs-12 form-search" style="padding-top: 40px">
-                <button class="form-control btn-search" type="submit">Search</button>
+                <button class="form-control btn-search" type="submit" >Search</button>
             </div>
         </div>
     </form>
@@ -92,9 +112,9 @@
         {% for i in range(1, page_num + 1) %}
         <li class="page-item"><a id="page{{i}}"
                                  {% if isEmp %}
-                                 href="flight-list?page={{i}}?isEmp=1"
+                                 href="flight-list?page={{i}}&isEmp=1&start={{ start }}&destination={{ destination }}&takeOffTime={{ takeOffTime }}"
                                  {% else %}
-                                 href="flight-list?page={{i}}"
+                                 href="flight-list?page={{i}}&start={{ start }}&destination={{ destination }}&takeOffTime={{ takeOffTime }}"
                                  {% endif %}
                                  class="page-link" >{{i}}</a></li>
         {% endfor %}

@@ -175,24 +175,39 @@ def common_context():
 @app.route('/flight-list', methods=['post', 'get'])
 def show_flight():
     isEmp = request.args.get("isEmp")
-    flights = utils.get_flights(start=int(request.form.get("start", 0)),
-                                destination=int(request.form.get("destination", 0)),
-                                page=request.args.get("page", 1),
-                                takeOffTime=request.form.get("takeOffTime"))
+    page = int(request.args.get("page", 1))
+    destination = int(request.args.get("destination", 0))
+    start = int(request.args.get("start", 0))
+    takeOffTime = request.args.get("takeOffTime")
+
+    flights = utils.get_flights(start=start,
+                                destination=destination,
+                                page=page,
+                                takeOffTime=takeOffTime)
     slots = {}
     for f in flights[0]:
         slots[f.id] = utils.get_slot_remain(f.id)
 
-    page_num = math.ceil(flights[1] / app.config["PAGE_SIZE"])
+    page_num = math.ceil(flights[1] / utils.get_rules(name="PAGE_SIZE").value)
     airport_name = utils.get_airports_name()
+
+    # url =''
+    # if page :url += '?page='+str(page)
+    # else: url+= '?page=0'
+    # if start: url += '&start='+str(start)
+    # if destination: url += '&destination='+str(destination)
+    # if takeOffTime: url += '&takeOffTime=' + takeOffTime
 
     return render_template('flight-list.html',
                            airport_name=airport_name,
                            flights=flights[0],
                            date_rule=utils.get_rules(name="MAX_DATE_ALLOWED_BOOKING_BEFORE_TAKEOFF").value,
                            page_num=page_num,
-                           page_cur=request.args.get("page", 1),
+                           page_cur=page,
                            isEmp=isEmp,
+                           start=start,
+                           destination=destination,
+                           takeOffTime=takeOffTime,
                            slots=slots)
 
 @app.route('/manage-flight-route')

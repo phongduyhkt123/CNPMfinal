@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, NVARCHAR, Dat
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 
+
 class Roles(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     roleName = Column(NVARCHAR(100), nullable=False)
@@ -151,18 +152,22 @@ class Rules(db.Model):
 if __name__ == '__main__':
     db.create_all()
 
-    db.session.add(TicketTypes(typeName="Business Class"))
-    db.session.add(TicketTypes(typeName="Economy Class"))
-
-    db.session.add(Rules(ruleName="MIN_FLIGHT_TIME",value=30))
-    db.session.add(Rules(ruleName="MAX_STOPOVER_PER_FLIGHT",value=2))
-    db.session.add(Rules(ruleName="MIN_TIME_STOPOVER_PER_FLIGHT",value=10))
-    db.session.add(Rules(ruleName="MAX_TIME_STOPOVER_PER_FLIGHT",value=20))
-    db.session.add(Rules(ruleName="MAX_DATE_ALLOWED_BOOKING_BEFORE_TAKEOFF",value=1))
-
-    try:
-        db.session.commit()
-    except Exception as ex:
-        print(ex.args)
+    # if Rules.query.filter(Rules.ruleName == "DATA_INSERTED").first() is None:
+    #     db.session.add(TicketTypes(typeName="Business Class"))
+    #     db.session.add(TicketTypes(typeName="Economy Class"))
+    #
+    #     db.session.add(Rules(ruleName="MIN_FLIGHT_TIME", value=30))
+    #     db.session.add(Rules(ruleName="MAX_STOPOVER_PER_FLIGHT", value=2))
+    #     db.session.add(Rules(ruleName="MIN_TIME_STOPOVER_PER_FLIGHT", value=10))
+    #     db.session.add(Rules(ruleName="MAX_TIME_STOPOVER_PER_FLIGHT", value=20))
+    #     db.session.add(Rules(ruleName="MAX_DATE_ALLOWED_BOOKING_BEFORE_TAKEOFF", value=1))
+    #     db.session.add(Rules(ruleName="MAX_DATE_ALLOWED_BOOKING_BEFORE_TAKEOFF", value=1))
+    #     db.session.add(Rules(ruleName="PAGE_SIZE", value=6))
+    #     db.session.add(Rules(ruleName="DATA_INSERTED", value=1))
+    #
+    # try:
+    #     db.session.commit()
+    # except Exception as ex:
+    #     print(ex.args)
 
 

@@ -106,3 +106,12 @@ function to_signin(){
         location.replace("/login");
     }
 }
+
+// function search(){
+//     start = $('#sl1').val()
+//     destination = $('#sl2').val()
+//     takeOffTime = $('#input-tot').val()
+//
+//     location.replace("/flight-list?page="+String(page)+"&start="+start+"&destination="+destination+"&takeOffTime="+takeOffTime)
+// }
+
