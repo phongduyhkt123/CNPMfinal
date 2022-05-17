@@ -191,13 +191,6 @@ def show_flight():
     page_num = math.ceil(flights[1] / utils.get_rules(name="PAGE_SIZE").value)
     airport_name = utils.get_airports_name()
 
-    # url =''
-    # if page :url += '?page='+str(page)
-    # else: url+= '?page=0'
-    # if start: url += '&start='+str(start)
-    # if destination: url += '&destination='+str(destination)
-    # if takeOffTime: url += '&takeOffTime=' + takeOffTime
-
     return render_template('flight-list.html',
                            airport_name=airport_name,
                            flights=flights[0],
@@ -207,7 +200,7 @@ def show_flight():
                            isEmp=isEmp,
                            start=start,
                            destination=destination,
-                           takeOffTime=takeOffTime,
+                           takeOffTime=takeOffTime if takeOffTime else "",
                            slots=slots)
 
 @app.route('/manage-flight-route')
@@ -445,4 +438,4 @@ def about_us():
 
 
 if __name__ == '__main__':
-    app.run(debug= True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)

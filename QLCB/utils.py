@@ -114,8 +114,9 @@ def get_flights(start=None, destination=None, page=None, id=None, flew=False, ta
         return flights.get(id)
 
     if not flew:
-        today = Date.today()
-        flights = flights.filter(Flights.takeOffTime > today)
+        from datetime import datetime
+        now = datetime.now()
+        flights = flights.filter(Flights.takeOffTime > now)
     if start:
         flights = flights.filter(Flights.idStartAirport == start)
     if destination:

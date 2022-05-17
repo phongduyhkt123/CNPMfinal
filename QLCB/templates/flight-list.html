@@ -56,6 +56,11 @@
             <div class="col-md-3 col-xs-12 form-search" style="padding-top: 40px">
                 <button class="form-control btn-search" type="submit" >Search</button>
             </div>
+        {% if isEmp %}
+        <div class="hidden">
+            <input name="isEmp" value="1" type="hidden">
+        </div>
+        {% endif %}
         </div>
     </form>
 
