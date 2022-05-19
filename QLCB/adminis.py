@@ -252,7 +252,7 @@ class ReportView(AuthenticatedBaseView):
                 ticket[i[1]].append(i[2])
             except:
                 ticket[i[1]] = [i[2]]
-        print(ticket)
+
         ticket_data = list(ticket.values())
         ticket_type = list(ticket.keys())
 
