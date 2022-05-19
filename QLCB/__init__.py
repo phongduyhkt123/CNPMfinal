@@ -1,13 +1,10 @@
-from flask import Flask
 from flask_login import LoginManager
 from flask_admin import Admin
 import cloudinary
 
 from QLCB.Database import Database
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@localhost/qlcbdb?charset=utf8mb4"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
 # app.config["PAGE_SIZE"] = 2
 
 KEY_ADMIN_ROLE = "Admin"
@@ -40,11 +37,9 @@ DATA = [
     }
 ]
 
-app.secret_key = 'super secret key'
-
-
-database = Database(app)
+database = Database()
 db = database.get_db()
+app = database.app
 
 login = LoginManager(app=app)
 
