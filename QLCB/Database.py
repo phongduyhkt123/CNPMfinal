@@ -9,10 +9,11 @@ class Database:
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.secret_key = 'super secret key'
 
-    def get_db(self):
-        if self.__db is None:
-            self.__db = SQLAlchemy(self.app)
-        return self.__db
+    @staticmethod
+    def get_db():
+        if Database.__db is None:
+            Database.__db = SQLAlchemy(Database.app)
+        return Database.__db
 
 
 

@@ -37,9 +37,9 @@ DATA = [
     }
 ]
 
-database = Database()
-db = database.get_db()
-app = database.app
+# database = Database()
+db = Database.get_db()
+app = Database.app
 
 login = LoginManager(app=app)
 
