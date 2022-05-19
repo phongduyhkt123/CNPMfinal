@@ -4,7 +4,7 @@ from functools import wraps
 import cloudinary
 from cloudinary import uploader
 
-from QLCB import app, login
+from QLCB import login
 from QLCB.models import *
 from flask import request, render_template, redirect, session, url_for, flash, jsonify
 from sqlalchemy import and_

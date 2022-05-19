@@ -1,8 +1,9 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_admin import Admin
 import cloudinary
+
+from QLCB.Database import Database
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@localhost/qlcbdb?charset=utf8mb4"
@@ -41,7 +42,10 @@ DATA = [
 
 app.secret_key = 'super secret key'
 
-db = SQLAlchemy(app)
+
+database = Database(app)
+db = database.get_db()
+
 login = LoginManager(app=app)
 
 admin = Admin(app=app, name='FLY', template_mode='bootstrap4')
