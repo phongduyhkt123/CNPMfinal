@@ -4,6 +4,11 @@
 
 {% block content %}
 <div class="container-fluid">
+    {% if msg %}
+        <div class="alert alert-success"> Thanh toán thành công</div>
+    {% elif error %}
+        <div class="alert alert-danger"> Thanh toán không thành công</div>
+    {% endif %}
     <img src="{{ url_for('static', filename='image/1.jpg') }}" width="100%">
 </div>
 {% endblock %}
