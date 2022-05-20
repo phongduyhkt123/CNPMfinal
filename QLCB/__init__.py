@@ -13,30 +13,6 @@ KEY_EMPLOYEE_ROLE = "Employee"
 KEY_TICKET_TYPE_BUSINESS = "Business Class"
 KEY_TICKET_TYPE_ECONOMY = "Economy Class"
 
-DATA = [
-    {
-        # "airports":
-        #     [
-        #         {"airportName": "Tân Sơn Nhất", "airportAddress": "TP HCM"},
-        #         {"airportName": "Nội Bài", "airportAddress": "Hà Nội"},
-        #         {"airportName": "Quy Nhơn", "airportAddress": "Quy Nhơn"},
-        #         {"airportName": "Huế", "airportAddress": "Huế"}
-        #     ],
-
-        "roles":
-            [
-                {"roleName": KEY_ADMIN_ROLE},
-                {"roleName": KEY_EMPLOYEE_ROLE},
-            ],
-
-        "ticket_types":
-            [
-                {"typeName": KEY_TICKET_TYPE_BUSINESS},
-                {"typeName": KEY_TICKET_TYPE_ECONOMY},
-            ]
-    }
-]
-
 # database = Database()
 db = Database.get_db()
 app = Database.app
