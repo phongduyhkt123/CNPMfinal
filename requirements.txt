@@ -27,7 +27,7 @@ pycparser==2.20
 PyMySQL==1.0.2
 pyparsing==2.4.7
 pytest==6.2.5
-requests==2.26.0
+requests==2.31.0
 six==1.16.0
 SQLAlchemy==1.4.26
 toml==0.10.2
